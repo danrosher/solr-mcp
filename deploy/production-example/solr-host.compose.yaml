@@ -1,0 +1,47 @@
+# Runs on the Solr VM. Adds the read-only allowlist proxy next to Solr.
+#
+#   docker compose -f deploy/production-example/solr-host.compose.yaml up -d
+#
+# Before starting:
+#   1. Copy ../readonly-proxy/upstream.example.conf, list your Solr nodes, and export
+#      UPSTREAM_CONF=<path to your copy>.
+#   2. If Solr runs as another compose project ON THIS HOST, uncomment the `solr` network
+#      below and set SOLR_NETWORK to that project's network name (`docker network ls`) so
+#      the node hostnames in nginx.conf resolve. If Solr is reached by IP/DNS name, leave
+#      it commented out.
+#   3. Firewall: allow the MCP VM to reach PROXY_PORT (8984) and NOT Solr's 8983. See README.
+#
+# PROXY_BIND defaults to all interfaces because the MCP lives on another VM; the firewall,
+# not this setting, is what limits who can connect.
+name: solr-readonly-proxy
+
+services:
+  readonly-proxy:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${PROXY_BIND:-0.0.0.0}:${PROXY_PORT:-8984}:8984"
+    volumes:
+      - ../readonly-proxy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ${UPSTREAM_CONF:?set UPSTREAM_CONF to your cluster's upstream file (see ../readonly-proxy/upstream.example.conf)}:/etc/nginx/solr/upstream.conf:ro
+    # Hardening. nginx's master process starts as root to bind and drop privileges.
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+    cap_drop: [ ALL ]
+    cap_add: [ CHOWN, SETGID, SETUID ]
+    security_opt: [ "no-new-privileges:true" ]
+    # End-to-end check: proxy up AND able to reach Solr.
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- 'http://127.0.0.1:8984/solr/admin/collections?action=LIST' >/dev/null" ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    # networks: [ solr ]
+
+# networks:
+#   solr:
+#     external: true
+#     name: ${SOLR_NETWORK:?set SOLR_NETWORK to the Docker network of your Solr project}

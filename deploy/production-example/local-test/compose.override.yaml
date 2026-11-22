@@ -1,0 +1,16 @@
+# LOCAL TEST ONLY. Joins the demo stack's network so the MCP can reach the demo proxy, and
+# turns OAuth2 off so the protocol can be exercised without an IdP. Never use in production.
+#
+#   docker compose -f deploy/demo/compose.yaml up -d
+#   MCP_IMAGE=solr-mcp:latest OAUTH2_ISSUER_URI=unused SOLR_URL=http://readonly-proxy:8984/solr/ \
+#     docker compose -f deploy/production-example/mcp-host.compose.yaml \
+#                    -f deploy/production-example/local-test/compose.override.yaml up -d
+services:
+  solr-mcp:
+    environment:
+      HTTP_SECURITY_ENABLED: "false"
+    networks: [ demo ]
+networks:
+  demo:
+    external: true
+    name: solr-mcp-demo_demo

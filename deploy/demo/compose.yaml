@@ -1,0 +1,52 @@
+# Self-contained demo: Solr (NOT published to the host) + the read-only proxy + a
+# one-shot loader. Only the proxy is reachable from the host, so the MCP server has
+# no way to write even if it tries.
+#
+#   docker compose -f deploy/demo/compose.yaml up -d
+#   docker compose -f deploy/demo/compose.yaml down -v     # reset everything
+name: solr-mcp-demo
+services:
+  zoo:
+    image: zookeeper:3.9
+    networks: [ demo ]
+
+  solr:
+    image: ${SOLR_IMAGE:-solr:9.6.1-slim}
+    environment:
+      ZK_HOST: zoo:2181
+      SOLR_HEAP: 512m
+    depends_on: [ zoo ]
+    networks: [ demo ]
+    ports:
+      - "8983:8983"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -sf http://localhost:8983/solr/admin/info/system >/dev/null" ]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 15s
+
+  demo-init:
+    image: ${SOLR_IMAGE:-solr:9.6.1-slim}
+    depends_on:
+      solr: { condition: service_healthy }
+    networks: [ demo ]
+    restart: "no"
+    entrypoint: [ "bash", "/init.sh" ]
+    volumes:
+      - ./init.sh:/init.sh:ro
+      - ./data:/data:ro
+
+  readonly-proxy:
+    image: nginx:1.27-alpine
+    depends_on:
+      solr: { condition: service_healthy }
+    networks: [ demo ]
+    ports:
+      - "127.0.0.1:${PROXY_PORT:-8984}:8984"
+    volumes:
+      - ../readonly-proxy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../readonly-proxy/upstream.demo.conf:/etc/nginx/solr/upstream.conf:ro
+
+networks:
+  demo:

@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "solr": {
+      "command": "./run-mcp.sh"
+    }
+  }
+}

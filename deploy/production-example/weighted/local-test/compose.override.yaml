@@ -1,0 +1,22 @@
+# LOCAL TEST ONLY. Adds a real ZooKeeper and three stand-in Solr nodes (an nginx answering 200
+# with its own name) to the `upstream` network. Start only the proxy and watcher:
+#   docker compose -p solr-mcp-wlocal --env-file local-test/env.local \
+#       -f compose.yaml -f local-test/compose.override.yaml up -d --build zk-watcher readonly-proxy zk blue-1 blue-2 green-1
+x-backend: &backend
+  image: nginx:1.27-alpine
+  networks: [ upstream ]
+services:
+  zk:
+    image: zookeeper:3.9
+    networks: [ upstream ]
+  blue-1:
+    <<: *backend
+    command: sh -c "echo 'server{listen 8983;location / {default_type application/json;return 200 \"{\\\"collections\\\":[\\\"blue-1\\\"]}\";}}' > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
+  blue-2:
+    <<: *backend
+    command: sh -c "echo 'server{listen 8983;location / {default_type application/json;return 200 \"{\\\"collections\\\":[\\\"blue-2\\\"]}\";}}' > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
+  green-1:
+    <<: *backend
+    command: sh -c "echo 'server{listen 8983;location / {default_type application/json;return 200 \"{\\\"collections\\\":[\\\"green-1\\\"]}\";}}' > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
+  readonly-proxy:
+    depends_on: [ blue-1, blue-2, green-1 ]

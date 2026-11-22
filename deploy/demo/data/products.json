@@ -1,0 +1,142 @@
+[
+ {
+  "product_oid": "P0001",
+  "title": "Trailblazer Waterproof Hiking Jacket",
+  "brand": "Nordvik",
+  "category": "Clothing > Outdoor",
+  "description": "Lightweight three-layer waterproof shell with taped seams and a packable hood."
+ },
+ {
+  "product_oid": "P0002",
+  "title": "Summit Merino Base Layer",
+  "brand": "Nordvik",
+  "category": "Clothing > Outdoor",
+  "description": "Breathable merino wool thermal top for cold-weather hiking and skiing."
+ },
+ {
+  "product_oid": "P0003",
+  "title": "Ridge Trail Running Shoes",
+  "brand": "Stride",
+  "category": "Footwear > Running",
+  "description": "Cushioned trail running shoes with aggressive grip for wet and muddy paths."
+ },
+ {
+  "product_oid": "P0004",
+  "title": "Cloudstep Everyday Sneakers",
+  "brand": "Stride",
+  "category": "Footwear > Casual",
+  "description": "Comfortable canvas sneakers for everyday wear with a memory-foam insole."
+ },
+ {
+  "product_oid": "P0005",
+  "title": "Alpine 40L Backpack",
+  "brand": "Nordvik",
+  "category": "Bags > Backpacks",
+  "description": "Durable 40 litre hiking backpack with rain cover and ventilated back panel."
+ },
+ {
+  "product_oid": "P0006",
+  "title": "Urban Commuter Laptop Backpack",
+  "brand": "Kestrel",
+  "category": "Bags > Backpacks",
+  "description": "Water-resistant 15 inch laptop backpack with USB charging port and anti-theft pocket."
+ },
+ {
+  "product_oid": "P0007",
+  "title": "Aero Insulated Water Bottle 750ml",
+  "brand": "Hydra",
+  "category": "Sports > Hydration",
+  "description": "Double-wall stainless steel bottle that keeps drinks cold for 24 hours or hot for 12."
+ },
+ {
+  "product_oid": "P0008",
+  "title": "Pulse Wireless Earbuds",
+  "brand": "Kestrel",
+  "category": "Electronics > Audio",
+  "description": "Bluetooth 5.3 earbuds with active noise cancelling and 30 hour battery case."
+ },
+ {
+  "product_oid": "P0009",
+  "title": "Beacon Smart Fitness Tracker",
+  "brand": "Kestrel",
+  "category": "Electronics > Wearables",
+  "description": "Heart-rate and sleep tracking band with 14 day battery and GPS."
+ },
+ {
+  "product_oid": "P0010",
+  "title": "Lumen LED Camping Lantern",
+  "brand": "Nordvik",
+  "category": "Outdoor > Camping",
+  "description": "Rechargeable collapsible LED lantern with warm and cool light modes."
+ },
+ {
+  "product_oid": "P0011",
+  "title": "Cascade 2-Person Dome Tent",
+  "brand": "Nordvik",
+  "category": "Outdoor > Camping",
+  "description": "Easy-pitch waterproof two person tent with double doors and vestibule."
+ },
+ {
+  "product_oid": "P0012",
+  "title": "Forge Cast Iron Skillet 26cm",
+  "brand": "Hearth",
+  "category": "Home > Kitchen",
+  "description": "Pre-seasoned cast iron frying pan suitable for hob, oven and open fire."
+ },
+ {
+  "product_oid": "P0013",
+  "title": "Hearth Chef's Knife 20cm",
+  "brand": "Hearth",
+  "category": "Home > Kitchen",
+  "description": "Forged high-carbon steel chef's knife with a balanced ergonomic handle."
+ },
+ {
+  "product_oid": "P0014",
+  "title": "Brew Pour-Over Coffee Set",
+  "brand": "Hearth",
+  "category": "Home > Kitchen",
+  "description": "Glass carafe, reusable steel filter and scoop for pour-over coffee."
+ },
+ {
+  "product_oid": "P0015",
+  "title": "Dreamcloud Memory Foam Pillow",
+  "brand": "Slumber",
+  "category": "Home > Bedroom",
+  "description": "Contoured memory foam pillow with a cooling gel layer and washable cover."
+ },
+ {
+  "product_oid": "P0016",
+  "title": "Slumber Egyptian Cotton Duvet Set",
+  "brand": "Slumber",
+  "category": "Home > Bedroom",
+  "description": "400 thread count Egyptian cotton duvet cover and pillowcases."
+ },
+ {
+  "product_oid": "P0017",
+  "title": "Glide Yoga Mat 6mm",
+  "brand": "Hydra",
+  "category": "Sports > Yoga",
+  "description": "Non-slip eco-friendly TPE yoga mat with carrying strap."
+ },
+ {
+  "product_oid": "P0018",
+  "title": "Iron Core Adjustable Dumbbell Pair",
+  "brand": "Stride",
+  "category": "Sports > Fitness",
+  "description": "Adjustable dumbbells from 2 to 20 kg per hand with a quick-lock dial."
+ },
+ {
+  "product_oid": "P0019",
+  "title": "Sprout Kids Raincoat",
+  "brand": "Puddle",
+  "category": "Clothing > Kids",
+  "description": "Bright waterproof raincoat for children with reflective trims and a hood."
+ },
+ {
+  "product_oid": "P0020",
+  "title": "Puddle Kids Wellington Boots",
+  "brand": "Puddle",
+  "category": "Footwear > Kids",
+  "description": "Soft rubber wellies with easy-pull handles and a non-slip sole."
+ }
+]

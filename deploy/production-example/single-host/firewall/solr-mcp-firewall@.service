@@ -1,0 +1,18 @@
+# Re-applies the firewall rules after every boot and after Docker restarts.
+#   sudo cp solr-mcp-firewall@.service /etc/systemd/system/
+#   sudo systemctl enable --now solr-mcp-firewall@blue solr-mcp-firewall@green
+# %i is the cluster name; the env file is /opt/solr-mcp/env.%i (adjust the paths below).
+[Unit]
+Description=Block direct Solr access from the %i MCP container
+After=docker.service
+Requires=docker.service
+# Docker must have created the DOCKER-USER chain; the compose stack need not be up yet.
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/opt/solr-mcp/firewall/apply.sh /opt/solr-mcp/env.%i
+ExecStop=/opt/solr-mcp/firewall/apply.sh /opt/solr-mcp/env.%i --remove
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+# LOCAL TEST ONLY: joins the demo stack's network as the "upstream" side, and turns OAuth2 off.
+#   docker compose -f deploy/demo/compose.yaml up -d
+#   docker compose -p solr-mcp-blue --env-file local-test/env.blue.local \
+#       -f compose.yaml -f local-test/compose.override.yaml up -d
+services:
+  solr-mcp:
+    environment:
+      HTTP_SECURITY_ENABLED: "false"
+networks:
+  upstream: !override
+    external: true
+    name: solr-mcp-demo_demo

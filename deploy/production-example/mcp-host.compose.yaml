@@ -1,0 +1,56 @@
+# Runs on the MCP VM: the Solr MCP server in HTTP mode, read-only, OAuth2-protected.
+#
+#   export MCP_IMAGE=registry.example.com/solr-mcp:1.0.0-yourtag
+#   export SOLR_URL=http://<solr-vm>:8984/solr/        # the PROXY port, never 8983
+#   export OAUTH2_ISSUER_URI=https://<idp>/realms/<realm>
+#   docker compose -f deploy/production-example/mcp-host.compose.yaml up -d
+#
+# The server is published on loopback only: put your TLS-terminating reverse proxy (or
+# change MCP_BIND to a private interface) in front of it. Clients connect to the public
+# https URL, and your IdP must issue tokens whose `aud` is that URL (see README).
+#
+# Do NOT set HTTP_SECURITY_ENABLED=false here: it removes authentication (the project
+# documents it as forbidden on any reachable network). The local test override is the only
+# place that does so.
+name: solr-mcp
+
+services:
+  solr-mcp:
+    image: ${MCP_IMAGE:?set MCP_IMAGE to the image built from your fork}
+    restart: unless-stopped
+    ports:
+      - "${MCP_BIND:-127.0.0.1}:${MCP_PORT:-8080}:8080"
+    environment:
+      PROFILES: http
+      SOLR_URL: ${SOLR_URL:?set SOLR_URL to the read-only proxy, e.g. http://solr-vm:8984/solr/}
+      OAUTH2_ISSUER_URI: ${OAUTH2_ISSUER_URI:?set OAUTH2_ISSUER_URI; the server will not start if it is unreachable}
+      # Hides the write tools from the tool list. The proxy is what actually blocks writes.
+      SOLR_MCP_READ_ONLY: "true"
+      MCP_CORS_ALLOWED_ORIGINS: ${MCP_CORS_ALLOWED_ORIGINS:-http://localhost:6274,http://127.0.0.1:6274}
+      # Point at your OTLP collector, or the exporters log connection errors on every flush.
+      OTEL_TRACES_URL: ${OTEL_TRACES_URL:-http://localhost:4318/v1/traces}
+      OTEL_METRICS_URL: ${OTEL_METRICS_URL:-http://localhost:4318/v1/metrics}
+      OTEL_LOGS_URL: ${OTEL_LOGS_URL:-http://localhost:4318/v1/logs}
+      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=75
+    # Hardening: the image runs as root by default.
+    user: "10001:10001"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ ALL ]
+    security_opt: [ "no-new-privileges:true" ]
+    mem_limit: 768m
+    # The base image has neither curl nor wget. /dev/tcp is a bash feature (not sh), so call bash.
+    healthcheck:
+      test:
+        - CMD
+        - bash
+        - -c
+        - >-
+          exec 3<>/dev/tcp/127.0.0.1/8080 &&
+          printf 'GET /actuator/health HTTP/1.0\r\n\r\n' >&3 &&
+          grep -q ' 200 ' <&3
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
